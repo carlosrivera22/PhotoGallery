@@ -1,6 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* styles/globals.css */
+@import 'daisyui/dist/full.css';
+
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -8,11 +11,11 @@
   --background-end-rgb: 255, 255, 255;
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-contrast: high) {
   :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    --foreground-rgb: 255, 255, 0; /* yellow text */
+    --background-start-rgb: 0, 0, 0; /* black background start */
+    --background-end-rgb: 0, 0, 0; /* black background end */
   }
 }
 
