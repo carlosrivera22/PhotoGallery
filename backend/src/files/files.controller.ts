@@ -4,6 +4,8 @@ import {
   Get,
   UploadedFile,
   UseInterceptors,
+  Delete,
+  Param,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express/multer';
 import { File } from 'multer';
@@ -18,11 +20,16 @@ export class FilesController {
     FileInterceptor('image', new FilesService().createMulterOptions()),
   )
   uploadFile(@UploadedFile() file: File) {
-    return { message: 'File uploaded successfully', file };
+    return this.filesService.uploadFile(file);
   }
 
   @Get()
   getFiles() {
     return this.filesService.getFiles();
+  }
+
+  @Delete(':filename')
+  deleteFile(@Param('filename') filename: string) {
+    return this.filesService.deleteFile(filename);
   }
 }

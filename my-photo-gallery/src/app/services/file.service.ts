@@ -15,3 +15,9 @@ export async function uploadImage(image: File) {
     const data = await res.json();
     return data;
 }
+
+export async function deleteImage(filename: string) {
+    await fetch(`http://localhost:3001/files/${filename}`, {
+        method: 'DELETE',
+    });
+}

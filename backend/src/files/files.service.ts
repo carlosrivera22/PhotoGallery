@@ -54,4 +54,19 @@ export class FilesService {
       };
     });
   }
+
+  uploadFile(file: any) {
+    const fileBuffer = fs.readFileSync(file.path);
+    const base64Image = fileBuffer.toString('base64');
+    return {
+      data: `data:image/jpeg;base64,${base64Image}`,
+      name: file.filename,
+    };
+  }
+
+  deleteFile(filename: string) {
+    console.debug(this.uploadPath, filename);
+    const filePath = path.join(this.uploadPath, filename);
+    fs.unlinkSync(filePath);
+  }
 }
