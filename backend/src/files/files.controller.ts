@@ -6,6 +6,7 @@ import {
   UseInterceptors,
   Delete,
   Param,
+  Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express/multer';
 import { File } from 'multer';
@@ -24,8 +25,11 @@ export class FilesController {
   }
 
   @Get()
-  getFiles() {
-    return this.filesService.getFiles();
+  getFiles(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 12,
+  ) {
+    return this.filesService.getFiles(page, limit);
   }
 
   @Delete(':filename')

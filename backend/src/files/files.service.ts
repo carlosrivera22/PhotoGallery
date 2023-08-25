@@ -38,21 +38,28 @@ export class FilesService {
     };
   }
 
-  getFiles() {
+  getFiles(page: number = 1, limit: number = 12) {
     const files = fs.readdirSync(this.uploadPath);
     if (!files) {
       return [];
     }
 
-    return files.map((file) => {
-      const filePath = path.join(this.uploadPath, file);
-      const fileBuffer = fs.readFileSync(filePath);
-      const base64Image = fileBuffer.toString('base64');
-      return {
-        data: `data:image/jpeg;base64,${base64Image}`,
-        name: file,
-      };
-    });
+    // Paginate the files
+    const start = (page - 1) * limit;
+    const end = page * limit;
+    const paginatedFiles = files.slice(start, end);
+    return paginatedFiles.map((file) => this.readFile(file));
+  }
+
+  // Helper function to read a file and convert it to base64
+  private readFile(file: string) {
+    const filePath = path.join(this.uploadPath, file);
+    const fileBuffer = fs.readFileSync(filePath);
+    const base64Image = fileBuffer.toString('base64');
+    return {
+      data: `data:image/jpeg;base64,${base64Image}`,
+      name: file,
+    };
   }
 
   uploadFile(file: any) {
