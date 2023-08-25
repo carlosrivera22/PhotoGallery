@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import * as fs from 'fs';
-import * as path from 'path';
-import * as multer from 'multer';
+import { Injectable } from "@nestjs/common";
+import * as fs from "fs";
+import * as path from "path";
+import * as multer from "multer";
 
 @Injectable()
 export class FilesService {
@@ -9,15 +9,15 @@ export class FilesService {
   private readonly uploadPath: string;
 
   constructor() {
-    this.uploadPath = path.resolve(__dirname, '..', '..', 'uploads');
-    console.log('Upload path:', this.uploadPath); // Debugging
+    this.uploadPath = path.resolve(__dirname, "..", "..", "uploads");
+    console.info("Upload path:", this.uploadPath); // Debugging
 
     if (!fs.existsSync(this.uploadPath)) {
-      console.log('Directory does not exist, creating...'); // Debugging
+      console.info("Directory does not exist, creating..."); // Debugging
       fs.mkdirSync(this.uploadPath, { recursive: true });
-      console.log('Directory created'); // Debugging
+      console.info("Directory created"); // Debugging
     } else {
-      console.log('Directory already exists'); // Debugging
+      console.info("Directory already exists"); // Debugging
     }
   }
 
@@ -29,7 +29,7 @@ export class FilesService {
         },
         filename: (req, file, cb) => {
           const filename: string =
-            path.parse(file.originalname).name.replace(/\s+/g, '') + Date.now();
+            path.parse(file.originalname).name.replace(/\s+/g, "") + Date.now();
           const extension: string = path.parse(file.originalname).ext;
 
           cb(null, `${filename}${extension}`);
@@ -38,7 +38,7 @@ export class FilesService {
     };
   }
 
-  getFiles(page: number = 1, limit: number = 12) {
+  getFiles(page = 1, limit = 12) {
     const files = fs.readdirSync(this.uploadPath);
     if (!files) {
       return [];
@@ -55,7 +55,7 @@ export class FilesService {
   private readFile(file: string) {
     const filePath = path.join(this.uploadPath, file);
     const fileBuffer = fs.readFileSync(filePath);
-    const base64Image = fileBuffer.toString('base64');
+    const base64Image = fileBuffer.toString("base64");
     return {
       data: `data:image/jpeg;base64,${base64Image}`,
       name: file,
@@ -64,7 +64,7 @@ export class FilesService {
 
   uploadFile(file: any) {
     const fileBuffer = fs.readFileSync(file.path);
-    const base64Image = fileBuffer.toString('base64');
+    const base64Image = fileBuffer.toString("base64");
     return {
       data: `data:image/jpeg;base64,${base64Image}`,
       name: file.filename,
