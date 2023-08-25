@@ -67,7 +67,7 @@ export default function ClientImageGallery() {
       <div
         key={index}
         className="border rounded overflow-hidden shadow-lg transition-transform hover:scale-105 relative"
-        style={{ height: '400px' }}
+        style={{ height: '300px', width: '400px', marginTop: '5rem' }}
       >
        <button className="btn btn-square btn-sm absolute top-0 right-0 m-2 z-10" style={{ backgroundColor: 'white' }} onClick={() => toggleMenu(index)}>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
