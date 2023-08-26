@@ -29,10 +29,9 @@ export default function ClientImageGallery() {
       reader.readAsDataURL(file);
 
       // Await the upload
-      const res = await uploadImage(file);
-      console.log(res);
+      await uploadImage(file);
       // Add the image to state
-      setImages([...images, { name: file.name, data: res.data }]);
+      await fetchImages();
     }
 
     // Clear the input after upload
@@ -40,11 +39,8 @@ export default function ClientImageGallery() {
   };
 
   const handleDelete = async (index: number) => {
-    // You can handle the delete action here.
-    // This example simply removes the image from the state
-    setImages(images.filter((_, idx) => idx !== index));
-    alert(images[index].name);
     await deleteImage(images[index].name);
+    await fetchImages();
     setMenuIndex(null); // Close the menu
   };
 

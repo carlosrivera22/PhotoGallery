@@ -1,7 +1,8 @@
-import { Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import * as fs from "fs";
 import * as path from "path";
 import * as multer from "multer";
+import { File } from "multer";
 
 @Injectable()
 export class FilesService {
@@ -31,10 +32,24 @@ export class FilesService {
           const filename: string =
             path.parse(file.originalname).name.replace(/\s+/g, "") + Date.now();
           const extension: string = path.parse(file.originalname).ext;
-
           cb(null, `${filename}${extension}`);
         },
       }),
+      fileFilter: (req, file, cb) => {
+        if (file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+          // Allow storage of file
+          cb(null, true);
+        } else {
+          // Reject file
+          cb(
+            new HttpException(
+              `Unsupported file type ${path.extname(file.originalname)}`,
+              HttpStatus.BAD_REQUEST
+            ),
+            false
+          );
+        }
+      },
     };
   }
 
@@ -44,10 +59,19 @@ export class FilesService {
       return [];
     }
 
-    // Paginate the files
+    // Sort files by date added
+    files.sort((a, b) => {
+      return (
+        fs.statSync(path.join(this.uploadPath, b)).mtime.getTime() -
+        fs.statSync(path.join(this.uploadPath, a)).mtime.getTime()
+      );
+    });
+
+    // Paginate the sorted files
     const start = (page - 1) * limit;
     const end = page * limit;
     const paginatedFiles = files.slice(start, end);
+
     return paginatedFiles.map((file) => this.readFile(file));
   }
 
@@ -62,7 +86,7 @@ export class FilesService {
     };
   }
 
-  uploadFile(file: any) {
+  uploadFile(file: File) {
     const fileBuffer = fs.readFileSync(file.path);
     const base64Image = fileBuffer.toString("base64");
     return {
