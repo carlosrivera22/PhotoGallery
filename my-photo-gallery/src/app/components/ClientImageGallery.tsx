@@ -58,6 +58,7 @@ export default function ClientImageGallery() {
             type="file"
             className="file-input file-input-bordered file-input-primary w-full max-w-xs"
             onChange={handleImageUpload}
+            accept="image/png, image/jpeg"
           />
         </div>
         {images.map((img, index) => (
