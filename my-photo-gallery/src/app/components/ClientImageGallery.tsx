@@ -11,13 +11,15 @@ export default function ClientImageGallery() {
     }[]
   >([]);
   const [menuIndex, setMenuIndex] = useState<number | null>(null); // State to manage which menu is open
-
+  const [page, setPage] = useState<number>(1);
   useEffect(() => {
-    fetchImages();
+    fetchImages(page);
   }, []);
 
-  const fetchImages = async () => {
-    setImages(await getImages());
+  const fetchImages = async (page: number) => {
+    const imagesData = await getImages(page);
+    setImages(imagesData);
+    return imagesData;
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,7 +33,7 @@ export default function ClientImageGallery() {
       // Await the upload
       await uploadImage(file);
       // Add the image to state
-      await fetchImages();
+      await fetchImages(page);
     }
 
     // Clear the input after upload
@@ -40,7 +42,7 @@ export default function ClientImageGallery() {
 
   const handleDelete = async (index: number) => {
     await deleteImage(images[index].name);
-    await fetchImages();
+    await fetchImages(page);
     setMenuIndex(null); // Close the menu
   };
 
@@ -118,9 +120,32 @@ export default function ClientImageGallery() {
         ))}
       </div>
       <div className="join flex justify-center items-center mt-20 mb-10">
-        <button className="join-item btn bg-primary text-white">«</button>
-        <button className="join-item btn bg-primary text-white">Page 22</button>
-        <button className="join-item btn bg-primary text-white">»</button>
+        <button
+          onClick={async () => {
+            if (page === 1) return;
+            await fetchImages(page - 1);
+            setPage(page - 1);
+          }}
+          className="join-item btn bg-primary text-white"
+        >
+          «
+        </button>
+        <button className="join-item btn bg-primary text-white">
+          Page {page}
+        </button>
+        <button
+          onClick={async () => {
+            const images = await fetchImages(page + 1);
+            if (images.length === 0) {
+              await fetchImages(page);
+              return;
+            }
+            setPage(page + 1);
+          }}
+          className="join-item btn bg-primary text-white"
+        >
+          »
+        </button>
       </div>
     </>
   );

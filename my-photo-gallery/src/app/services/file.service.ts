@@ -1,5 +1,7 @@
-export async function getImages() {
-  const res = await fetch("http://localhost:3001/files");
+export async function getImages(page: number = 1, limit: number = 12) {
+  const res = await fetch(
+    `http://localhost:3001/files?page=${page}&limit=${limit}`,
+  );
   const images = await res.json();
   return images;
 }
